@@ -2,13 +2,12 @@ import os
 import shutil
 import subprocess
 import re
+import time
 
 targets = [
-    {"mc": "1.21.10", "fabric": "0.138.4+1.21.10", "loader": "0.16.14", "loom": "1.8.12"},
-    {"mc": "1.21.11", "fabric": "0.141.4+1.21.11", "loader": "0.16.14", "loom": "1.9.2"},
-    {"mc": "26.1",    "fabric": "0.144.1+26.1",    "loader": "0.18.4",  "loom": "1.15-SNAPSHOT"},
-    {"mc": "26.1.1",  "fabric": "0.145.2+26.1.1",  "loader": "0.18.4",  "loom": "1.15-SNAPSHOT"},
-    {"mc": "26.1.2",  "fabric": "0.149.0+26.1.2",  "loader": "0.18.4",  "loom": "1.15-SNAPSHOT"},
+    {"mc": "26.1",   "fabric": "0.144.1+26.1"},
+    {"mc": "26.1.1", "fabric": "0.145.2+26.1.1"},
+    {"mc": "26.1.2", "fabric": "0.149.0+26.1.2"},
 ]
 
 os.makedirs("BUILDS", exist_ok=True)
@@ -19,42 +18,45 @@ with open("gradle.properties", "r", encoding="utf-8") as f:
 with open("src/main/resources/fabric.mod.json", "r", encoding="utf-8") as f:
     fmj_orig = f.read()
 
-with open("build.gradle", "r", encoding="utf-8") as f:
-    bg_orig = f.read()
-
 gp_orig = re.sub(r"mod_version=.*", "mod_version=1.0.0", gp_orig)
 
-for target in targets:
-    mc_ver  = target["mc"]
-    fab_ver = target["fabric"]
-    loader  = target["loader"]
-    loom    = target["loom"]
-    print(f"\nBuilding for Minecraft {mc_ver} (loom {loom})...")
+def safe_delete_build_dir():
+    build_dir = "build"
+    if not os.path.exists(build_dir):
+        return
+    for i in range(10):
+        try:
+            shutil.rmtree(build_dir)
+            print("  Successfully deleted build directory.")
+            return
+        except Exception as e:
+            print(f"  Failed to delete build directory (attempt {i+1}): {e}")
+            env = os.environ.copy()
+            env["JAVA_HOME"] = r"d:\git\minecraft-mods\LitematicaEasyPlaceVariants\jdk-25"
+            subprocess.run([r".\gradlew.bat", "--stop"], shell=True, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            time.sleep(2.0)
+    print("  WARNING: Could not delete build directory after 10 attempts!")
 
-    # gradle.properties
+for target in targets:
+    mc_ver = target["mc"]
+    fab_ver = target["fabric"]
+    print(f"Building for Minecraft {mc_ver}...")
+
+    # Clean build directory before starting
+    safe_delete_build_dir()
+
     gp = re.sub(r"minecraft_version=.*", f"minecraft_version={mc_ver}", gp_orig)
-    gp = re.sub(r"fabric_version=.*",    f"fabric_version={fab_ver}",   gp)
-    gp = re.sub(r"loader_version=.*",    f"loader_version={loader}",    gp)
+    gp = re.sub(r"fabric_version=.*", f"fabric_version={fab_ver}", gp)
     with open("gradle.properties", "w", encoding="utf-8") as f:
         f.write(gp)
 
-    # fabric.mod.json
     fmj = re.sub(r'"minecraft":\s*".*?"', f'"minecraft": "~{mc_ver}"', fmj_orig)
     with open("src/main/resources/fabric.mod.json", "w", encoding="utf-8") as f:
         f.write(fmj)
 
-    # build.gradle — patch loom version
-    bg = re.sub(
-        r"id 'net\.fabricmc\.fabric-loom' version '.*?'",
-        f"id 'net.fabricmc.fabric-loom' version '{loom}'",
-        bg_orig
-    )
-    with open("build.gradle", "w", encoding="utf-8") as f:
-        f.write(bg)
-
     env = os.environ.copy()
     env["JAVA_HOME"] = r"d:\git\minecraft-mods\LitematicaEasyPlaceVariants\jdk-25"
-    result = subprocess.run([r".\gradlew.bat", "clean", "build"], shell=True, env=env)
+    result = subprocess.run([r".\gradlew.bat", "build"], shell=True, env=env)
     if result.returncode != 0:
         print(f"Build failed for MC {mc_ver}!")
         exit(1)
@@ -64,21 +66,21 @@ for target in targets:
     shutil.copy(src_jar, dest_jar)
     print(f"  -> {dest_jar}")
 
-# Restore to 26.1.2 / loom 1.15
-gp_final = re.sub(r"minecraft_version=.*", "minecraft_version=26.1.2",       gp_orig)
-gp_final = re.sub(r"fabric_version=.*",    "fabric_version=0.149.0+26.1.2",  gp_final)
-gp_final = re.sub(r"loader_version=.*",    "loader_version=0.18.4",           gp_final)
+    # Stop daemon to release locks immediately after build
+    subprocess.run([r".\gradlew.bat", "--stop"], shell=True, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    time.sleep(2.0)
+
+# Final clean
+safe_delete_build_dir()
+
+# Restore
+gp_final = re.sub(r"minecraft_version=.*", "minecraft_version=26.1.2",      gp_orig)
+gp_final = re.sub(r"fabric_version=.*",    "fabric_version=0.149.0+26.1.2", gp_final)
 with open("gradle.properties", "w", encoding="utf-8") as f:
     f.write(gp_final)
 
-fmj_final = re.sub(r'"minecraft":\s*".*?"', '"minecraft": ">=1.21.10"', fmj_orig)
+fmj_final = re.sub(r'"minecraft":\s*".*?"', '"minecraft": ">=26.1"', fmj_orig)
 with open("src/main/resources/fabric.mod.json", "w", encoding="utf-8") as f:
     f.write(fmj_final)
 
-with open("build.gradle", "w", encoding="utf-8") as f:
-    f.write(bg_orig)
-
 print("\nAll builds completed!")
-print("  python create_github_repo.py")
-print("  python ../publish_tools/upload_github.py")
-print("  python ../publish_tools/upload_modrinth.py")

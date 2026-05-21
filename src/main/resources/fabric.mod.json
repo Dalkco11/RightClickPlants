@@ -1,0 +1,30 @@
+{
+	"schemaVersion": 1,
+	"id": "right-click-plants",
+	"version": "${version}",
+	"name": "Right Click Plants",
+	"description": "Right-click mature crops to harvest and automatically replant them.",
+	"authors": [
+		"Dalkco"
+	],
+	"contact": {
+		"homepage": "https://modrinth.com/mod/right-click-plants",
+		"sources": "https://github.com/Dalkco11/RightClickPlants"
+	},
+	"license": "MIT",
+	"icon": "assets/right-click-plants/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"com.dalkco.rightclickplants.RightClickPlantsMod"
+		]
+	},
+	"mixins": [
+		"right-click-plants.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.18.4",
+		"minecraft": ">=26.1",
+		"fabric-api": "*"
+	}
+}

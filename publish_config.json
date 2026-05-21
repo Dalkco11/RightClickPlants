@@ -1,0 +1,10 @@
+{
+  "project_id": "right-click-plants",
+  "github_repo": "Dalkco11/RightClickPlants",
+  "dependencies": [
+    {
+      "project_id": "P7dR8mSH",
+      "dependency_type": "required"
+    }
+  ]
+}

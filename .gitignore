@@ -1,0 +1,8 @@
+.gradle/
+.gradle-home/
+build/
+bin/
+run/
+out/
+.idea/
+release/

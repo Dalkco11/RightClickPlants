@@ -58,4 +58,17 @@ public class UseBlockMixin {
         Direction placeFace = PlantHelper.getPlaceFace(state);
         PendingPlantQueue.schedule(pos, supportPos, placeFace, seed);
     }
+
+    @Inject(method = "performUseItemOn", at = @At("HEAD"), cancellable = true)
+    private void onPerformUseItemOn(LocalPlayer player, InteractionHand hand, BlockHitResult hitResult,
+                                    CallbackInfoReturnable<InteractionResult> cir) {
+        ItemStack heldItem = player.getItemInHand(hand);
+        if (heldItem.getItem() instanceof BoneMealItem) {
+            // Bypasses the client-side BoneMealItem.useOn call to prevent ClassCastException crashes.
+            // The interaction packet is still sent to the server, which handles the actual growth.
+            cir.setReturnValue(InteractionResult.SUCCESS);
+            cir.cancel();
+        }
+    }
 }
+

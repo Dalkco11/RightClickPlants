@@ -7,5 +7,5 @@ out/
 .idea/
 release/
 /BUILDS/
-test_1_21_11.py
-test_modrinth.py
+*.py
+publish_config.json

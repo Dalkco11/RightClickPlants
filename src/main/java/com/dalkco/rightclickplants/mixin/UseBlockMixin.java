@@ -9,7 +9,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,13 +28,19 @@ public class UseBlockMixin {
         // Обрабатываем только основную руку, чтобы не дублировать
         if (hand != InteractionHand.MAIN_HAND) return;
 
+        // Если игрок держит костную муку —
+        // не перехватываем: пусть ваниль обрабатывает useOn сама.
+        // Это фиксит краш: BoneMealItem.useOn() ожидает PASS, а не SUCCESS.
+        ItemStack heldItem = player.getItemInHand(hand);
+        if (heldItem.getItem() instanceof BoneMealItem) return;
+
         ClientLevel level = (ClientLevel) player.level();
         BlockPos pos = hitResult.getBlockPos();
         BlockState state = level.getBlockState(pos);
 
         if (!PlantHelper.isMatureCrop(state)) return;
 
-        // Отменяем ванильное взаимодействие (у созревших культур его нет, но на всякий случай)
+        // Отменяем ванильное взаимодействие
         cir.setReturnValue(InteractionResult.SUCCESS);
         cir.cancel();
 

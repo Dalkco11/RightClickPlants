@@ -88,7 +88,7 @@ public class PendingPlantQueue {
         Component hint = Component.literal(
             "§e[Right Click Plants] §fПереложите §a" + seedName + " §fв быстрый доступ (слоты 1–9)"
         );
-        client.gui.setOverlayMessage(hint, false);
+        client.gui.hud.setOverlayMessage(hint, false);
     }
 
     private static boolean tryPlant(Minecraft client, LocalPlayer player, PendingPlant plant, int seedSlot) {

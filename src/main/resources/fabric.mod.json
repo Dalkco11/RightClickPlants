@@ -23,7 +23,7 @@
 		"right-click-plants.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.20.1",
+		"fabricloader": ">=0.16.0",
 		"minecraft": ">=26.3",
 		"fabric-api": "*"
 	}

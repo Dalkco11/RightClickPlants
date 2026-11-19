@@ -1,6 +1,7 @@
 package com.dalkco.rightclickplants;
 
 import com.dalkco.rightclickplants.mixin.InventoryAccessor;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -56,7 +57,7 @@ public class PendingPlantQueue {
                 if (tryPlant(client, player, plant, hotbarSlot)) {
                     iter.remove();
                 }
-            } else if (hasSeedInInventory(player, plant.seed())) {
+            } else if (RightClickPlantsConfig.get().hotbarHint && hasSeedInInventory(player, plant.seed())) {
                 // Семя есть в инвентаре, но не в хотбаре — показываем подсказку
                 showHint(client, player, plant.seed());
             }
@@ -84,10 +85,10 @@ public class PendingPlantQueue {
         if (tick - lastHintTick < HINT_COOLDOWN) return;
         lastHintTick = tick;
 
-        String seedName = seed.getDefaultInstance().getHoverName().getString();
-        Component hint = Component.literal(
-            "§e[Right Click Plants] §fПереложите §a" + seedName + " §fв быстрый доступ (слоты 1–9)"
-        );
+        Component seedName = seed.getDefaultInstance().getHoverName().copy().withStyle(ChatFormatting.GREEN);
+        Component hint = Component.literal("[Right Click Plants] ").withStyle(ChatFormatting.YELLOW)
+            .append(Component.translatable("right-click-plants.hint.move_to_hotbar", seedName)
+                .withStyle(ChatFormatting.WHITE));
         client.gui.hud.setOverlayMessage(hint, false);
     }
 

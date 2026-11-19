@@ -18,6 +18,8 @@
 - **Smart Timing**: If the seed drops and lands in your inventory, the mod will replant it within 5 seconds.
 - **Server Compatible**: Works on any server — no server-side mod required.
 - **Supported Crops**: Wheat, Carrots, Potatoes, Beetroot, Nether Wart, Cocoa Beans.
+- **Settings**: in [Mod Menu](https://modrinth.com/mod/modmenu) you can turn right-click harvesting, auto replant and the hotbar hint on or off.
+- **English and Russian**: the mod follows your game language.
 
 ### 📥 Installation
 
@@ -52,6 +54,8 @@ Join my Discord server for chat, support, and news:
 - **Умная задержка**: Если семя выпадает и попадает в инвентарь, мод пересадит его в течение 5 секунд.
 - **Совместимость с серверами**: Работает на любом сервере — серверный мод не нужен.
 - **Поддерживаемые растения**: Пшеница, Морковь, Картофель, Свёкла, Нетерровая бородавка, Какао-бобы.
+- **Настройки**: в [Mod Menu](https://modrinth.com/mod/modmenu) можно включить или выключить сбор по ПКМ, автопосадку и подсказку о панели быстрого доступа.
+- **Английский и русский**: мод переключается вместе с языком игры.
 
 ### 📥 Установка
 

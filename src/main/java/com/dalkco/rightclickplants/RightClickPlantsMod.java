@@ -13,6 +13,7 @@ public class RightClickPlantsMod implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         LOGGER.info("Right Click Plants initialized!");
+        RightClickPlantsConfig.load();
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null || client.level == null) return;

@@ -1,0 +1,10 @@
+{
+  "right-click-plants.hint.move_to_hotbar": "Move %s to your hotbar (slots 1–9)",
+  "right-click-plants.config.title": "Right Click Plants Settings",
+  "right-click-plants.config.enabled": "Right-click harvesting",
+  "right-click-plants.config.enabled.tooltip": "Right-click a fully grown crop to harvest it.",
+  "right-click-plants.config.replant": "Auto replant",
+  "right-click-plants.config.replant.tooltip": "Plant a seed back after harvesting. The seed must be in your hotbar.",
+  "right-click-plants.config.hotbar_hint": "Hotbar hint",
+  "right-click-plants.config.hotbar_hint.tooltip": "Remind you to move seeds to the hotbar when they are only in your inventory."
+}

@@ -1,0 +1,10 @@
+{
+  "right-click-plants.hint.move_to_hotbar": "Переложи %s на панель быстрого доступа (слоты 1–9)",
+  "right-click-plants.config.title": "Настройки Right Click Plants",
+  "right-click-plants.config.enabled": "Сбор правым кликом",
+  "right-click-plants.config.enabled.tooltip": "Кликни правой кнопкой по созревшему растению, чтобы собрать урожай.",
+  "right-click-plants.config.replant": "Автопосадка",
+  "right-click-plants.config.replant.tooltip": "После сбора семя сажается обратно. Семена должны лежать у тебя на панели быстрого доступа.",
+  "right-click-plants.config.hotbar_hint": "Подсказка о панели",
+  "right-click-plants.config.hotbar_hint.tooltip": "Напоминает тебе переложить семена на панель быстрого доступа, если они есть только в инвентаре."
+}

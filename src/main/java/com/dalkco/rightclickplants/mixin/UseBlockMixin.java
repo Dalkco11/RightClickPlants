@@ -2,6 +2,7 @@ package com.dalkco.rightclickplants.mixin;
 
 import com.dalkco.rightclickplants.PendingPlantQueue;
 import com.dalkco.rightclickplants.PlantHelper;
+import com.dalkco.rightclickplants.RightClickPlantsConfig;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.player.LocalPlayer;
@@ -27,6 +28,7 @@ public class UseBlockMixin {
                              CallbackInfoReturnable<InteractionResult> cir) {
         // Обрабатываем только основную руку, чтобы не дублировать
         if (hand != InteractionHand.MAIN_HAND) return;
+        if (!RightClickPlantsConfig.get().enabled) return;
 
         // Если игрок держит костную муку —
         // не перехватываем: пусть ваниль обрабатывает useOn сама.
@@ -51,6 +53,7 @@ public class UseBlockMixin {
         gameMode.destroyBlock(pos);
 
         // Определяем семя и планируем посадку
+        if (!RightClickPlantsConfig.get().replant) return;
         Item seed = PlantHelper.getSeed(state);
         if (seed == null) return;
 
